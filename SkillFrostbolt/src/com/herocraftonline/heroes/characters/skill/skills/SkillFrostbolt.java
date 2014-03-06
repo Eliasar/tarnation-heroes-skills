@@ -29,7 +29,7 @@ public class SkillFrostbolt extends ActiveSkill {
 
     public SkillFrostbolt(Heroes plugin) {
         super(plugin, "Frostbolt");
-        setDescription("Fire a bolt of frost that deals $1 damage.");
+        setDescription("Fire a bolt of frost that deals $1 damage and slows the target.");
         setUsage("/skill frostbolt");
         setArgumentRange(0, 0);
         setIdentifiers("skill frostbolt");

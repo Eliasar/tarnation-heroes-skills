@@ -20,7 +20,7 @@ public class SkillNetherTendrils extends TargettedSkill {
 
     public SkillNetherTendrils(Heroes plugin) {
         super(plugin, "NetherTendrils");
-        setDescription("Deal $1 damage over $3 seconds.");
+        setDescription("Summon nether tendrils that deal damage $1 over $2 seconds.");
         setUsage("/skill nethertendrils");
         setArgumentRange(0, 0);
         setIdentifiers("skill nethertendrils");
@@ -84,8 +84,7 @@ public class SkillNetherTendrils extends TargettedSkill {
 
         description += getDescription()
                 .replace("$1", "§9" + damage * (duration/period) + "§6")
-                .replace("$2", "§9" + period + "§6")
-                .replace("$3", "§9" + duration + "§6");
+                .replace("$2", "§9" + duration + "§6");
 
         return description;
     }
