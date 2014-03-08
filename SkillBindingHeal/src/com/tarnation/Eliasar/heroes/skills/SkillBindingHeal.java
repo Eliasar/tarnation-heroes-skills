@@ -31,7 +31,6 @@ public class SkillBindingHeal extends  TargettedSkill {
         node.set(SkillSetting.MAX_DISTANCE.node(), 15);
         node.set(SkillSetting.MANA.node(), 10);
         node.set(SkillSetting.COOLDOWN.node(), 4000);
-        node.set("particle-name", "heart");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 10);
         return node;
@@ -79,7 +78,6 @@ public class SkillBindingHeal extends  TargettedSkill {
         Player player = hero.getPlayer();
         double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 4, false)
                 + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.2, false) * hero.getLevel();
-        String particleName = SkillConfigManager.getUseSetting(hero, this, "particle-name", "heart");
         float particlePower = (float) SkillConfigManager.getUseSetting(hero, this, "particle-power", 0.5, false);
         int particleAmount = SkillConfigManager.getUseSetting(hero, this, "particle-amount", 10, false);
 

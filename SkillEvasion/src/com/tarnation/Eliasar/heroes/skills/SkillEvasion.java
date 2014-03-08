@@ -50,16 +50,17 @@ public class SkillEvasion extends PassiveSkill {
 
     public class SkillEvasionListener implements Listener {
 
-        @EventHandler(ignoreCancelled = true)
+        @EventHandler
         public void onWeaponDamage(WeaponDamageEvent event) {
-            if (event.isCancelled()
-                    || !(event.getEntity() instanceof Player)
-                    || !(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("Evasion"))) {
+            if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
                 return;
             }
 
             Player player = (Player) event.getEntity();
             Hero hero = plugin.getCharacterManager().getHero(player);
+
+            if (!hero.hasEffect("Evasion")) return;
+
             double amount = SkillConfigManager.getUseSetting(hero, SkillEvasion.this, SkillSetting.AMOUNT.node(), 10, false);
             amount = amount > 0 ? amount : 0;
 
@@ -77,16 +78,17 @@ public class SkillEvasion extends PassiveSkill {
             }
         }
 
-        @EventHandler(ignoreCancelled = true)
+        @EventHandler
         public void onSkillDamage(SkillDamageEvent event) {
-            if (event.isCancelled()
-                    || !(event.getEntity() instanceof Player)
-                    || !(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("Evasion"))) {
+            if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
                 return;
             }
 
             Player player = (Player) event.getEntity();
             Hero hero = plugin.getCharacterManager().getHero(player);
+
+            if (!hero.hasEffect("Evasion")) return;
+
             double amount = SkillConfigManager.getUseSetting(hero, SkillEvasion.this, SkillSetting.AMOUNT.node(), 10, false);
             amount = amount > 0 ? amount : 0;
 

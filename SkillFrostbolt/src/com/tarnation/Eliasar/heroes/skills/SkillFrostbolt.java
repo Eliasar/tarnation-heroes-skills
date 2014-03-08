@@ -4,12 +4,11 @@ import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.Monster;
-import com.herocraftonline.heroes.characters.effects.EffectType;
-import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -107,53 +106,30 @@ public class SkillFrostbolt extends ActiveSkill {
         return SkillResult.NORMAL;
     }
 
-    public class FrostboltEffect extends ExpirableEffect {
+    public class FrostboltEffect extends SlowEffect {
 
-        private SlowEffect se;
-
-        public FrostboltEffect(Skill skill, Player caster, long duration) {
-            super(skill, "Frostbolt", duration);
-            this.types.add(EffectType.MAGIC);
-            this.types.add(EffectType.DISPELLABLE);
-
-            se = new SlowEffect(SkillFrostbolt.this,
-                duration,
-                SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillFrostbolt.this, "slow-multiplier", 2, false),
-                false,
-                applyText,
-                expireText,
-                plugin.getCharacterManager().getHero(caster)
-            );
+        public FrostboltEffect(Skill skill, long duration, int amplifier, Hero applier) {
+            super(skill, duration, amplifier, false, applyText, expireText, applier);
         }
 
         @Override
         public void applyToHero(Hero hero) {
             super.applyToHero(hero);
-            hero.addEffect(se);
-            Player p = hero.getPlayer();
-            broadcast(p.getLocation(), SkillFrostbolt.this.applyText.replace("$1", p.getDisplayName()));
         }
 
         @Override
         public void applyToMonster(Monster monster) {
             super.applyToMonster(monster);
-            monster.addEffect(se);
-            broadcast(monster.getEntity().getLocation(), SkillFrostbolt.this.applyText.replace("$1", monster.getName()));
         }
 
         @Override
         public void removeFromHero(Hero hero) {
             super.removeFromHero(hero);
-            hero.removeEffect(se);
-            Player p = hero.getPlayer();
-            broadcast(p.getLocation(), SkillFrostbolt.this.expireText.replace("$1", p.getDisplayName()));
         }
 
         @Override
         public void removeFromMonster(Monster monster) {
             super.removeFromMonster(monster);
-            monster.removeEffect(se);
-            broadcast(monster.getEntity().getLocation(), SkillFrostbolt.this.expireText.replace("$1", monster.getName()));
         }
     }
 
@@ -191,7 +167,8 @@ public class SkillFrostbolt extends ActiveSkill {
 
                 // Add effect
                 long duration = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "slow-duration", 2500, false);
-                FrostboltEffect fe = new FrostboltEffect(SkillFrostbolt.this, shooter, duration);
+                int amplifier = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "slow-multiplier", 2, false);
+                FrostboltEffect fe = new FrostboltEffect(SkillFrostbolt.this, duration, amplifier, hero);
 
                 plugin.getCharacterManager().getCharacter(target).addEffect(fe);
 
@@ -199,7 +176,9 @@ public class SkillFrostbolt extends ActiveSkill {
                 int particleAmount = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "particle-amount", 50, false);
 
                 // Particle effect
-                shooter.getWorld().spigot().playEffect(shooter.getEyeLocation(), Effect.SNOWBALL_BREAK, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
+                Location loc = target.getLocation();
+                loc.setY(loc.getY() + 0.5);
+                shooter.getWorld().spigot().playEffect(loc, Effect.SNOWBALL_BREAK, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
             }
         }
     }

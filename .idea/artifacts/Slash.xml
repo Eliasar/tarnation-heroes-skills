@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Slash">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="Slash.jar">
+      <element id="module-output" name="SkillSlash" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillSlash" />
+    </root>
+  </artifact>
+</component>

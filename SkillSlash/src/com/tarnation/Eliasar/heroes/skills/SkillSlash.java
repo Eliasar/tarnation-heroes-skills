@@ -10,33 +10,32 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SkillPowerShot extends ActiveSkill {
+public class SkillSlash extends ActiveSkill {
 
-    public SkillPowerShot(Heroes plugin) {
-        super(plugin, "PowerShot");
-        setDescription("Empower your next shot within 10 seconds to deal 250% weapon damage.");
-        setUsage("/skill powershot");
+    public SkillSlash(Heroes plugin) {
+        super(plugin, "Slash");
+        setDescription("Swing harder and deal 140% weapon damage on your next hit.");
+        setUsage("/skill slash");
         setArgumentRange(0, 0);
-        setIdentifiers("skill powershot");
+        setIdentifiers("skill slash");
         setTypes(SkillType.PHYSICAL, SkillType.DAMAGING);
 
         // Register event
-        Bukkit.getServer().getPluginManager().registerEvents(new SkillPowerShotListener(), plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(new SkillSlashListener(), plugin);
     }
 
     @Override
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
-        node.set(SkillSetting.COOLDOWN.node(), 20000);
+        node.set(SkillSetting.COOLDOWN.node(), 1500);
         node.set(SkillSetting.DURATION.node(), 10000);
-        node.set(SkillSetting.MANA.node(), 30);
-        node.set(SkillSetting.APPLY_TEXT.node(), "$1 has gained Power Shot.");
-        node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 has lost Power Shot.");
+        node.set(SkillSetting.MANA.node(), 10);
+        node.set(SkillSetting.APPLY_TEXT.node(), "$1 has gained Slash.");
+        node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 has lost Slash.");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 50);
         return node;
@@ -77,8 +76,8 @@ public class SkillPowerShot extends ActiveSkill {
 
     @Override
     public SkillResult use(Hero hero, String[] strings) {
-        PowerShotEffect powerShotEffect = new PowerShotEffect(this, SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false));
-        hero.addEffect(powerShotEffect);
+        SlashEffect slashEffect = new SlashEffect(this, SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false));
+        hero.addEffect(slashEffect);
 
         // Broadcast
         broadcastExecuteText(hero);
@@ -86,32 +85,18 @@ public class SkillPowerShot extends ActiveSkill {
         return SkillResult.NORMAL;
     }
 
-    public class PowerShotEffect extends ExpirableEffect {
+    public class SlashEffect extends ExpirableEffect {
 
-        private int particleEffectTaskID;
-
-        public PowerShotEffect(Skill skill, long duration) {
-            super(skill, "PowerShotEffect", duration);
+        public SlashEffect(Skill skill, long duration) {
+            super(skill, "SlashEffect", duration);
         }
 
         @Override
         public void applyToHero(Hero hero) {
             super.applyToHero(hero);
             Player p = hero.getPlayer();
-            final Hero finalHero = hero;
             broadcast(p.getLocation(), SkillConfigManager.getUseSetting(hero,
-                    SkillPowerShot.this, SkillSetting.APPLY_TEXT, "").replace("$1", p.getDisplayName()));
-            particleEffectTaskID = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(
-                    plugin,
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            playEffect(finalHero);
-                        }
-                    },
-                    0L,
-                    20L
-            );
+                    SkillSlash.this, SkillSetting.APPLY_TEXT, "").replace("$1", p.getDisplayName()));
         }
 
         @Override
@@ -119,39 +104,36 @@ public class SkillPowerShot extends ActiveSkill {
             super.removeFromHero(hero);
             Player p = hero.getPlayer();
             broadcast(p.getLocation(), SkillConfigManager.getUseSetting(hero,
-                    SkillPowerShot.this, SkillSetting.EXPIRE_TEXT, "").replace("$1", p.getDisplayName()));
-            plugin.getServer().getScheduler().cancelTask(particleEffectTaskID);
-        }
-
-        public void playEffect(Hero hero) {
-            float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillPowerShot.this, "particle-power", 10, false);
-            int particleAmount = SkillConfigManager.getUseSetting(hero, SkillPowerShot.this, "particle-amount", 50, false);
-            Location loc = hero.getPlayer().getLocation();
-            loc.setY(loc.getY() + 0.5);
-
-            loc.getWorld().spigot().playEffect(loc, Effect.VOID_FOG, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
+                    SkillSlash.this, SkillSetting.EXPIRE_TEXT, "").replace("$1", p.getDisplayName()));
         }
     }
 
-    public class SkillPowerShotListener implements Listener {
+    public class SkillSlashListener implements Listener {
 
         @EventHandler
         public void onWeaponDamage(WeaponDamageEvent event) {
 
             if (event.isCancelled()
-                    || !event.getAttackerEntity().getType().equals(EntityType.ARROW)
                     || !(event.getDamager().getEntity() instanceof Player)) {
                 return;
             }
 
             Hero hero = plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity());
 
-            if (hero.hasEffect("PowerShotEffect")) {
+            if (hero.hasEffect("SlashEffect")) {
                 // Remove effect
-                hero.removeEffect(hero.getEffect("PowerShotEffect"));
+                hero.removeEffect(hero.getEffect("SlashEffect"));
 
-                // Set damage to 250%
-                event.setDamage(event.getDamage() * 2.5);
+                // Set damage to 140%
+                event.setDamage(event.getDamage() * 1.4);
+
+                // Play effect
+                float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillSlash.this, "particle-power", 10, false);
+                int particleAmount = SkillConfigManager.getUseSetting(hero, SkillSlash.this, "particle-amount", 50, false);
+                Location loc = event.getEntity().getLocation();
+                loc.setY(loc.getY() + 0.5);
+
+                loc.getWorld().spigot().playEffect(loc, Effect.CRIT, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
             }
         }
     }

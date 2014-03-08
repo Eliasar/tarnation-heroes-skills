@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="ParticleEffect:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/ParticleEffect_jar</output-path>
-    <root id="archive" name="ParticleEffect.jar">
-      <element id="module-output" name="ParticleEffect" />
-    </root>
-  </artifact>
-</component>
