@@ -8,8 +8,8 @@ import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.*;
-import com.tarnation.Eliasar.util.ParticleEffect;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -50,7 +50,6 @@ public class SkillFrostbolt extends ActiveSkill {
         node.set("velocity", 4);
         node.set(SkillSetting.APPLY_TEXT.node(), "$1 has been slowed!");
         node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 is no longer slowed.");
-        node.set("particle-name", "snowballpoof");
         node.set("particle-power", 1);
         node.set("particle-amount", 50);
         return node;
@@ -170,7 +169,7 @@ public class SkillFrostbolt extends ActiveSkill {
 
             if (!(projectile instanceof Snowball)) return;
 
-            Entity damager = ((Snowball) subEvent.getDamager()).getShooter();
+            Entity damager = (Entity) ((Snowball) subEvent.getDamager()).getShooter();
 
             if (damager instanceof Player) {
                 Hero hero = plugin.getCharacterManager().getHero((Player) damager);
@@ -196,18 +195,11 @@ public class SkillFrostbolt extends ActiveSkill {
 
                 plugin.getCharacterManager().getCharacter(target).addEffect(fe);
 
-                String particleName = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "particle-name", "snowballpoof");
                 float particlePower = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "particle-power", 1, false);
                 int particleAmount = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "particle-amount", 50, false);
 
                 // Particle effect
-                ParticleEffect pe = new ParticleEffect(particleName, target.getEyeLocation(), particlePower, particleAmount);
-                pe.playEffect();
-
-                // TODO: When Spigot supports it, uncomment for particles
-                //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-                //playerParticles.playEffect(player.getEyeLocation(), Effect.SNOWBALLPOOF, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-                //pePlayer.playEffect();
+                shooter.getWorld().spigot().playEffect(shooter.getEyeLocation(), Effect.SNOWBALL_BREAK, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
             }
         }
     }

@@ -7,10 +7,8 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
-import com.tarnation.Eliasar.util.ParticleEffect;
 import org.bukkit.Effect;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -110,17 +108,9 @@ public class SkillBindingHeal extends  TargettedSkill {
             }
             player.setHealth(total);
 
-            // Play particle effect at target and player
-            ParticleEffect peTarget = new ParticleEffect(particleName, target.getEyeLocation(), particlePower, particleAmount);
-            ParticleEffect pePlayer = new ParticleEffect(particleName, player.getEyeLocation(), particlePower, particleAmount);
-            peTarget.playEffect();
-            pePlayer.playEffect();
-
-            // TODO: When Spigot supports it, uncomment for particles
-            //CraftWorld.Spigot targetParticles = new CraftWorld.Spigot();
-            //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-            //targetParticles.playEffect(target.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-            //playerParticles.playEffect(player.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
+            // Play effects
+            target.getWorld().spigot().playEffect(target.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
+            player.getWorld().spigot().playEffect(player.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
 
             // Broadcast
             broadcastExecuteText(hero);
@@ -139,13 +129,8 @@ public class SkillBindingHeal extends  TargettedSkill {
             }
             player.setHealth(total);
 
-            // Play particle effect at self
-            ParticleEffect pePlayer = new ParticleEffect(particleName, player.getEyeLocation(), particlePower, particleAmount);
-            pePlayer.playEffect();
-
-            // TODO: When Spigot supports it, uncomment for particles
-            //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-            //playerParticles.playEffect(player.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
+            // Play effect
+            player.getWorld().spigot().playEffect(player.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
 
             // Broadcast
             broadcastExecuteText(hero);

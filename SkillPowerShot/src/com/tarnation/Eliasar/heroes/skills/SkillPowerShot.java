@@ -6,8 +6,8 @@ import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
 import com.herocraftonline.heroes.characters.skill.*;
-import com.tarnation.Eliasar.util.ParticleEffect;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
@@ -39,7 +39,6 @@ public class SkillPowerShot extends ActiveSkill {
         node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 has lost Power Shot.");
         node.set("minimum-draw-timer", 5000);
         node.set("minimum-draw-timer-per-level", 33.33);
-        node.set("particle-name", "depthsuspend");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 50);
         return node;
@@ -127,13 +126,12 @@ public class SkillPowerShot extends ActiveSkill {
         }
 
         public void playEffect(Hero hero) {
-            String particleName = SkillConfigManager.getUseSetting(hero, SkillPowerShot.this, "particle-name", "depthsuspend");
             float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillPowerShot.this, "particle-power", 10, false);
             int particleAmount = SkillConfigManager.getUseSetting(hero, SkillPowerShot.this, "particle-amount", 50, false);
             Location loc = hero.getPlayer().getLocation();
             loc.setY(loc.getY() + 0.5);
-            ParticleEffect pe = new ParticleEffect(particleName, loc, particlePower, particleAmount);
-            pe.playEffect();
+
+            loc.getWorld().spigot().playEffect(loc, Effect.VOID_FOG, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
         }
     }
 

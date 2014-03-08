@@ -7,7 +7,7 @@ import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.PeriodicDamageEffect;
 import com.herocraftonline.heroes.characters.skill.*;
-import com.tarnation.Eliasar.util.ParticleEffect;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -43,7 +43,6 @@ public class SkillCensure extends TargettedSkill {
         node.set(SkillSetting.COOLDOWN.node(), 10000);
         node.set(SkillSetting.APPLY_TEXT.node(), "$1 has been silenced!");
         node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 is no longer silenced.");
-        node.set("particle-name", "smoke");
         node.set("particle-power", 1);
         node.set("particle-amount", 100);
         return node;
@@ -132,13 +131,11 @@ public class SkillCensure extends TargettedSkill {
 
     public class CensureEffect extends PeriodicDamageEffect {
 
-        private String particleName;
         private float particlePower;
         private int particleAmount;
 
         public CensureEffect(Skill skill, long period, long duration, double tickDamage, Player caster) {
             super(skill, "Censure", period, duration, tickDamage, caster);
-            this.particleName = SkillConfigManager.getUseSetting(getApplierHero(), SkillCensure.this, "particle-name", "smoke");
             this.particlePower = (float) SkillConfigManager.getUseSetting(getApplierHero(), SkillCensure.this, "particle-power", 1, false);
             this.particleAmount = SkillConfigManager.getUseSetting(getApplierHero(), SkillCensure.this, "particle-amount", 100, false);
             this.types.add(EffectType.DISPELLABLE);
@@ -164,7 +161,6 @@ public class SkillCensure extends TargettedSkill {
             if ((monster instanceof Zombie) || (monster instanceof Skeleton))
                 setTickDamage(getTickDamage() * 2.0);
 
-            //addSpellTarget(monster.getEntity(), plugin.getCharacterManager().getHero(getApplier()));
             damageEntity(monster.getEntity(), getApplier(), getTickDamage(), DamageCause.ENTITY_ATTACK, false);
 
             playEffect(monster.getEntity());
@@ -172,22 +168,13 @@ public class SkillCensure extends TargettedSkill {
 
         @Override
         public void tickHero(Hero hero) {
-            //Player p = hero.getPlayer();
-            //addSpellTarget(p, plugin.getCharacterManager().getHero(getApplier()));
             damageEntity(hero.getPlayer(), getApplier(), getTickDamage(), DamageCause.ENTITY_ATTACK, false);
 
             playEffect(hero.getEntity());
         }
 
         public void playEffect(LivingEntity le) {
-            // Particle effect - Eli's
-            ParticleEffect pe = new ParticleEffect(particleName, le.getEyeLocation(), particlePower, particleAmount);
-            pe.playEffect();
-
-            // TODO: When Spigot supports it, uncomment for particles
-            //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-            //playerParticles.playEffect(player.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-            //pePlayer.playEffect();
+            le.getWorld().spigot().playEffect(le.getEyeLocation(), Effect.SMOKE, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
         }
     }
 }

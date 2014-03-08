@@ -7,8 +7,9 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
-import com.tarnation.Eliasar.util.ParticleEffect;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +32,6 @@ public class SkillEvasion extends PassiveSkill {
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
         node.set(SkillSetting.AMOUNT.node(), 10);
-        node.set("particle-name", "spell");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 10);
         return node;
@@ -50,11 +50,11 @@ public class SkillEvasion extends PassiveSkill {
 
     public class SkillEvasionListener implements Listener {
 
-        public SkillEvasionListener() { }
-
         @EventHandler(ignoreCancelled = true)
         public void onWeaponDamage(WeaponDamageEvent event) {
-            if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
+            if (event.isCancelled()
+                    || !(event.getEntity() instanceof Player)
+                    || !(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("Evasion"))) {
                 return;
             }
 
@@ -79,7 +79,9 @@ public class SkillEvasion extends PassiveSkill {
 
         @EventHandler(ignoreCancelled = true)
         public void onSkillDamage(SkillDamageEvent event) {
-            if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
+            if (event.isCancelled()
+                    || !(event.getEntity() instanceof Player)
+                    || !(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("Evasion"))) {
                 return;
             }
 
@@ -103,16 +105,12 @@ public class SkillEvasion extends PassiveSkill {
         }
 
         public void playEffect(Hero hero) {
-            String particleName = SkillConfigManager.getUseSetting(hero, SkillEvasion.this, "particle-name", "magicCrit");
             float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillEvasion.this, "particle-power", 0.5, false);
             int particleAmount = SkillConfigManager.getUseSetting(hero, SkillEvasion.this, "particle-amount", 10, false);
-            ParticleEffect pe = new ParticleEffect(particleName, hero.getPlayer().getLocation(), particlePower, particleAmount);
-            pe.playEffect();
+            Location loc = hero.getPlayer().getLocation();
+            loc.setY(loc.getY() + 0.5);
 
-            // TODO: When Spigot supports it, uncomment for particles
-            //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-            //playerParticles.playEffect(player.getEyeLocation(), Effect.MAGIC_CRIT, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-            //pePlayer.playEffect();
+            hero.getPlayer().getWorld().spigot().playEffect(loc, Effect.MAGIC_CRIT, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
         }
     }
 }

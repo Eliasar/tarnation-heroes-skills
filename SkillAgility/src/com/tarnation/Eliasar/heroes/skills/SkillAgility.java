@@ -46,7 +46,8 @@ public class SkillAgility extends PassiveSkill {
         // Apply effect and start timer
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
-            //plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
+            if (!plugin.getCharacterManager().getHero(event.getPlayer()).hasEffect("Agility")) return;
+
             final Player player = event.getPlayer();
             player.removePotionEffect(PotionEffectType.JUMP);
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 400, 1));
@@ -62,6 +63,8 @@ public class SkillAgility extends PassiveSkill {
         // Cancel event, apply effect, and start timer
         @EventHandler
         public void onPlayerRespawn(PlayerRespawnEvent event) {
+            if (!plugin.getCharacterManager().getHero(event.getPlayer()).hasEffect("Agility")) return;
+
             plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
             final Player player = event.getPlayer();
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 400, 1));
@@ -77,6 +80,8 @@ public class SkillAgility extends PassiveSkill {
         // Cancel event, apply effect, and start timer
         @EventHandler
         public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+            if (!plugin.getCharacterManager().getHero(event.getPlayer()).hasEffect("Agility")) return;
+
             plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
             final Player player = event.getPlayer();
             player.removePotionEffect(PotionEffectType.JUMP);
@@ -93,6 +98,8 @@ public class SkillAgility extends PassiveSkill {
         // Cancel event
         @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event) {
+            if (!plugin.getCharacterManager().getHero(event.getPlayer()).hasEffect("Agility")) return;
+
             final Player player = event.getPlayer();
             plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
             player.removePotionEffect(PotionEffectType.JUMP);

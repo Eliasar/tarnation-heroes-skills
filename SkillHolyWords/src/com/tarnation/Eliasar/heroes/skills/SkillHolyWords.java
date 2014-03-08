@@ -4,8 +4,9 @@ import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.*;
-import com.tarnation.Eliasar.util.ParticleEffect;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -31,7 +32,6 @@ public class SkillHolyWords extends TargettedSkill {
         node.set(SkillSetting.MAX_DISTANCE.node(), 15);
         node.set(SkillSetting.MANA.node(), 10);
         node.set(SkillSetting.COOLDOWN.node(), 2500);
-        node.set("particle-name", "enchantmenttable");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 100);
         return node;
@@ -109,15 +109,11 @@ public class SkillHolyWords extends TargettedSkill {
     }
 
     private void playEffect(Hero hero, LivingEntity target) {
-        String particleName = SkillConfigManager.getUseSetting(hero, this, "particle-name", "enchantmenttable");
         float particlePower = (float) SkillConfigManager.getUseSetting(hero, this, "particle-power", 0.5, false);
         int particleAmount = SkillConfigManager.getUseSetting(hero, this, "particle-amount", 100, false);
-        ParticleEffect pe = new ParticleEffect(particleName, target.getEyeLocation(), particlePower, particleAmount);
-        pe.playEffect();
+        Location loc = hero.getPlayer().getLocation();
+        loc.setY(loc.getY() + 0.5);
 
-        // TODO: When Spigot supports it, uncomment for particles
-        //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-        //playerParticles.playEffect(player.getEyeLocation(), Effect.ENCHANTMENTTABLE, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-        //pePlayer.playEffect();
+        hero.getPlayer().getWorld().spigot().playEffect(loc, Effect.FLYING_GLYPH, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
     }
 }

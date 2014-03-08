@@ -7,7 +7,7 @@ import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.PeriodicDamageEffect;
 import com.herocraftonline.heroes.characters.skill.*;
-import com.tarnation.Eliasar.util.ParticleEffect;
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -118,7 +118,6 @@ public class SkillNetherTendrils extends TargettedSkill {
 
         private String applyText;
         private String expireText;
-        private String particleName;
         private float particlePower;
         private int particleAmount;
 
@@ -128,7 +127,6 @@ public class SkillNetherTendrils extends TargettedSkill {
             this.types.add(EffectType.DISPELLABLE);
             this.applyText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.APPLY_TEXT, "");
             this.expireText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.EXPIRE_TEXT, "");
-            this.particleName = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, "particle-name", "");
             this.particlePower = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster),
                     SkillNetherTendrils.this, "particle-power", 1, false);
             this.particleAmount = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster),
@@ -183,13 +181,7 @@ public class SkillNetherTendrils extends TargettedSkill {
             loc.setY(loc.getY() + 0.5);
 
             // Particle effect
-            ParticleEffect pe = new ParticleEffect(particleName, loc, particlePower, particleAmount);
-            pe.playEffect();
-
-            // TODO: When Spigot supports it, uncomment for particles
-            //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-            //playerParticles.playEffect(player.getEyeLocation(), Effect.PORTAL, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-            //pePlayer.playEffect();
+            loc.getWorld().spigot().playEffect(loc, Effect.PORTAL, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
         }
     }
 }

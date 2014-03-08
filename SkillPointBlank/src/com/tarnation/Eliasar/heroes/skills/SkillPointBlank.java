@@ -5,8 +5,8 @@ import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.CharacterDamageManager;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.*;
-import com.tarnation.Eliasar.util.ParticleEffect;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
@@ -33,7 +33,6 @@ public class SkillPointBlank extends PassiveSkill {
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
         node.set(SkillSetting.COOLDOWN.node(), 7000);
-        node.set("particle-name", "crit");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 50);
         return node;
@@ -68,8 +67,6 @@ public class SkillPointBlank extends PassiveSkill {
         }
 
         // Damage
-        /*double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 2, false)
-                + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.2, false) * hero.getLevel();*/
         double damage = hero.getHeroClass().getProjectileDamage(CharacterDamageManager.ProjectileType.ARROW)
                 + hero.getHeroClass().getProjDamageLevel(CharacterDamageManager.ProjectileType.ARROW) * hero.getLevel();
 
@@ -88,8 +85,9 @@ public class SkillPointBlank extends PassiveSkill {
 
         @EventHandler
         public void onWeaponDamage(WeaponDamageEvent event) {
-
-            if (event.isCancelled() || !event.getAttackerEntity().getType().equals(EntityType.ARROW)) {
+            if (event.isCancelled()
+                    || !event.getAttackerEntity().getType().equals(EntityType.ARROW)
+                    || !(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("PointBlank"))) {
                 return;
             }
 
@@ -126,18 +124,12 @@ public class SkillPointBlank extends PassiveSkill {
         }
 
         public void playEffect(Hero hero, LivingEntity target) {
-            String particleName = SkillConfigManager.getUseSetting(hero, skill, "particle-name", "crit");
             float particlePower = (float) SkillConfigManager.getUseSetting(hero, skill, "particle-power", 0.5, false);
             int particleAmount = SkillConfigManager.getUseSetting(hero, skill, "particle-amount", 50, false);
             Location loc = target.getLocation();
             loc.setY(loc.getY() + 0.5);
-            ParticleEffect pe = new ParticleEffect(particleName, loc, particlePower, particleAmount);
-            pe.playEffect();
 
-            // TODO: When Spigot supports it, uncomment for particles
-            //CraftWorld.Spigot playerParticles = new CraftWorld.Spigot();
-            //playerParticles.playEffect(player.getEyeLocation(), Effect.HEART, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-            //pePlayer.playEffect();
+            loc.getWorld().spigot().playEffect(loc, Effect.CRIT, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
         }
     }
 }
