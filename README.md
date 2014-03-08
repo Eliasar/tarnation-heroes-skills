@@ -75,13 +75,10 @@ Summon nether tendrils that deal damage over time.
 
 ## Acolyte Skills
 
-<table style="margin:4px">
-<tr><td>
-<b>Holy Words</b> - Level 1<hr/>
-<i><color=#6e23dd>Active, CD: 2.5s, MP: 10</color></i><br/>
-Deal damage to your target. Deals 200% to undead.
-</td></tr>
-</table>
+Name | Type and Cost | Description
+:--- | :-----------: | :----------
+Holy Words | Active, CD: 2.5s, MP: 10 | Deal damage to your target. Deals 200% to undead.
+Binding Heal | Active | description
 
 
 <table style="margin:4px">
