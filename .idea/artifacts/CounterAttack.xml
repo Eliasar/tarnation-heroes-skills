@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="CounterAttack">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="CounterAttack.jar">
+      <element id="module-output" name="SkillCounterAttack" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillCounterAttack" />
+    </root>
+  </artifact>
+</component>

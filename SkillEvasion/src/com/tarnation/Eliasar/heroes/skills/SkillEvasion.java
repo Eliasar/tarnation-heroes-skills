@@ -21,7 +21,7 @@ public class SkillEvasion extends PassiveSkill {
 
     public SkillEvasion(Heroes plugin) {
         super(plugin, "Evasion");
-        setDescription("You have a $1% chance to evade weapon damage and skills.");
+        setDescription("You have a 10% chance to evade weapon damage and skills.");
         setIdentifiers("skill evasion");
 
         // Register event

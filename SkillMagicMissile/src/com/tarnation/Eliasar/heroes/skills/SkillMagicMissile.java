@@ -15,6 +15,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.Vector;
 
 public class SkillMagicMissile extends ActiveSkill {
@@ -91,7 +92,6 @@ public class SkillMagicMissile extends ActiveSkill {
 
         @EventHandler
         public void onWeaponDamage(WeaponDamageEvent event) {
-
             if(event.isCancelled()
                     || !event.getAttackerEntity().getType().equals(EntityType.ARROW)
                     || !(event.getDamager().getEntity() instanceof Player)) {
@@ -104,7 +104,17 @@ public class SkillMagicMissile extends ActiveSkill {
             double damage = SkillConfigManager.getUseSetting(hero, SkillMagicMissile.this, SkillSetting.DAMAGE.node(), 3, false)
                     + SkillConfigManager.getUseSetting(hero, SkillMagicMissile.this, SkillSetting.DAMAGE_INCREASE.node(), 0.2, false) * player.getLevel();
             event.setDamage(damage);
+        }
 
+        @EventHandler
+        public void onProjectileHit(ProjectileHitEvent event) {
+            if (!(event.getEntity().getShooter() instanceof Player) || !(event.getEntity() instanceof Arrow)) return;
+
+            Hero hero = plugin.getCharacterManager().getHero((Player) event.getEntity().getShooter());
+
+            if (!hero.hasAccessToSkill(SkillMagicMissile.this)) return;
+
+            event.getEntity().remove();
         }
     }
 }

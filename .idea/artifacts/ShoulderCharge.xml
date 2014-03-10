@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ShoulderCharge">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="ShoulderCharge.jar">
+      <element id="module-output" name="SkillShoulderCharge" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillShoulderCharge" />
+    </root>
+  </artifact>
+</component>

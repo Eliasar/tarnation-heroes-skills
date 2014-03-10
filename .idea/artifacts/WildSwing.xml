@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="WildSwing">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="WildSwing.jar">
+      <element id="module-output" name="SkillWildSwing" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillWildSwing" />
+    </root>
+  </artifact>
+</component>

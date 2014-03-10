@@ -86,12 +86,13 @@ public class SkillPointBlank extends PassiveSkill {
         @EventHandler
         public void onWeaponDamage(WeaponDamageEvent event) {
             if (event.isCancelled()
-                    || !event.getAttackerEntity().getType().equals(EntityType.ARROW)
-                    || !(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("PointBlank"))) {
+                    || !event.getAttackerEntity().getType().equals(EntityType.ARROW)) {
                 return;
             }
 
             if (event.getDamager().getEntity() instanceof Player) {
+                if (!(plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity()).hasEffect("PointBlank"))) return;
+
                 Player player = (Player) event.getDamager().getEntity();
                 Hero playerHero = plugin.getCharacterManager().getHero(player);
                 LivingEntity target = (LivingEntity) event.getEntity();
