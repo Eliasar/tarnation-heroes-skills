@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="SafeFall">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="SafeFall.jar">
+      <element id="module-output" name="SkillSafeFall" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillSafeFall" />
+    </root>
+  </artifact>
+</component>

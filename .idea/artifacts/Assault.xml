@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="Assault">
+  <artifact type="jar" build-on-make="true" name="Assault">
     <output-path>$PROJECT_DIR$/out</output-path>
     <root id="archive" name="Assault.jar">
       <element id="module-output" name="SkillAssault" />
