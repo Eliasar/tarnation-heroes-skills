@@ -11,7 +11,7 @@ Name | Type and Cost | Description
 Assault | Active, CD: 1.5s, MP: 10 | You assault your next target for 135% weapon damage.
 Safe Fall | Passive, CD: ---, MP: --- | Take one-third damage from falls.
 Sprint | Active, CD: 45s, MP: 20 | You sprint twice as fast as normal.
-Wild Swing | Active, CD: 5s, MP: 10 | If your character has an axe equipped and attacks from behind, enemy suffers 200% damage.
+Backstab | Active, CD: 5s, MP: -- | Attack from behind with an axe and deal 200% damage.
 
 ## Squire Skills
 
