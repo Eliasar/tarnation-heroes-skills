@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Leap">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="Leap.jar">
+      <element id="module-output" name="SkillLeap" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillLeap" />
+    </root>
+  </artifact>
+</component>

@@ -47,7 +47,7 @@ public class SkillSprint extends ActiveSkill {
         // Duration
         int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false);
 
-        description += getDescription().replace("$1", "§9" + duration + "§6");
+        description += getDescription().replace("$1", "§9" + duration/1000 + "§6");
 
         return description;
     }
