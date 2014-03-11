@@ -14,14 +14,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class SkillAssault extends ActiveSkill {
+public class SkillJab extends ActiveSkill {
 
-    public SkillAssault(Heroes plugin) {
-        super(plugin, "Assault");
-        setDescription("You assault your next target for 135% weapon damage.");
-        setUsage("/skill assault");
+    public SkillJab(Heroes plugin) {
+        super(plugin, "Jab");
+        setDescription("You jab your opponent for 120% fist damage.");
+        setUsage("/skill jab");
         setArgumentRange(0, 0);
-        setIdentifiers("skill assault");
+        setIdentifiers("skill jab");
         setTypes(SkillType.PHYSICAL, SkillType.DAMAGING);
 
         // Register event
@@ -34,8 +34,8 @@ public class SkillAssault extends ActiveSkill {
         node.set(SkillSetting.COOLDOWN.node(), 1500);
         node.set(SkillSetting.DURATION.node(), 10000);
         node.set(SkillSetting.MANA.node(), 10);
-        node.set(SkillSetting.APPLY_TEXT.node(), "$1 has gained Assault.");
-        node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 has lost Assault.");
+        node.set(SkillSetting.APPLY_TEXT.node(), "$1 has gained Jab.");
+        node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 has lost Jab.");
         node.set("particle-power", 0.5);
         node.set("particle-amount", 50);
         return node;
@@ -76,8 +76,8 @@ public class SkillAssault extends ActiveSkill {
 
     @Override
     public SkillResult use(Hero hero, String[] strings) {
-        AssaultEffect assaultEffect = new AssaultEffect(this, SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false));
-        hero.addEffect(assaultEffect);
+        JabEffect jabEffect = new JabEffect(this, SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false));
+        hero.addEffect(jabEffect);
 
         // Broadcast
         broadcastExecuteText(hero);
@@ -85,10 +85,10 @@ public class SkillAssault extends ActiveSkill {
         return SkillResult.NORMAL;
     }
 
-    public class AssaultEffect extends ExpirableEffect {
+    public class JabEffect extends ExpirableEffect {
 
-        public AssaultEffect(Skill skill, long duration) {
-            super(skill, "AssaultEffect", duration);
+        public JabEffect(Skill skill, long duration) {
+            super(skill, "JabEffect", duration);
         }
 
         @Override
@@ -96,7 +96,7 @@ public class SkillAssault extends ActiveSkill {
             super.applyToHero(hero);
             Player p = hero.getPlayer();
             broadcast(p.getLocation(), SkillConfigManager.getUseSetting(hero,
-                    SkillAssault.this, SkillSetting.APPLY_TEXT, "").replace("$1", p.getDisplayName()));
+                    SkillJab.this, SkillSetting.APPLY_TEXT, "").replace("$1", p.getDisplayName()));
         }
 
         @Override
@@ -104,7 +104,7 @@ public class SkillAssault extends ActiveSkill {
             super.removeFromHero(hero);
             Player p = hero.getPlayer();
             broadcast(p.getLocation(), SkillConfigManager.getUseSetting(hero,
-                    SkillAssault.this, SkillSetting.EXPIRE_TEXT, "").replace("$1", p.getDisplayName()));
+                    SkillJab.this, SkillSetting.EXPIRE_TEXT, "").replace("$1", p.getDisplayName()));
         }
     }
 
@@ -120,20 +120,20 @@ public class SkillAssault extends ActiveSkill {
 
             Hero hero = plugin.getCharacterManager().getHero((Player) event.getDamager().getEntity());
 
-            if (hero.hasEffect("AssaultEffect")) {
+            if (hero.hasEffect("JabEffect")) {
                 // Remove effect
-                hero.removeEffect(hero.getEffect("AssaultEffect"));
+                hero.removeEffect(hero.getEffect("JabEffect"));
 
-                // Set damage to 135%
-                event.setDamage(event.getDamage() * 1.35);
+                // Set damage to 120%
+                event.setDamage(event.getDamage() * 1.2);
 
                 // Play effect
-                float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillAssault.this, "particle-power", 10, false);
-                int particleAmount = SkillConfigManager.getUseSetting(hero, SkillAssault.this, "particle-amount", 50, false);
+                float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillJab.this, "particle-power", 10, false);
+                int particleAmount = SkillConfigManager.getUseSetting(hero, SkillJab.this, "particle-amount", 50, false);
                 Location loc = event.getEntity().getLocation();
                 loc.setY(loc.getY() + 0.5);
 
-                loc.getWorld().spigot().playEffect(loc, Effect.CRIT, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
+                loc.getWorld().spigot().playEffect(loc, Effect.SMOKE, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
             }
         }
     }

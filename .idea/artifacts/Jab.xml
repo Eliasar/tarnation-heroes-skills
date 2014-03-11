@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Jab">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="Jab.jar">
+      <element id="module-output" name="SkillJab" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillJab" />
+    </root>
+  </artifact>
+</component>
