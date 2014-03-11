@@ -12,7 +12,7 @@ Name | Type and Cost | Description
 :--- | :-----------: | :----------
 Slash | Active, CD: 1.5s, MP: 10 | Swing harder and deal 140% weapon damage on your next hit.
 Counter Attack | Passive, CD: 5s, MP: --- | Chance to counter your nearby opponent's attack for 50% while blocking.
-Shoulder Charge | Active, CD: 12, MP: 10 | Charge your opponent and knock them back.
+Shoulder Charge | Active, CD: 12, MP: 10 | Charge your opponent, damaging and knocking them back.
 Wild Swing | Active, CD: 5s, MP: 10 | Swing wildly and have a 40% chance to deal 200% weapon damage.
 
 ## Archer Skills

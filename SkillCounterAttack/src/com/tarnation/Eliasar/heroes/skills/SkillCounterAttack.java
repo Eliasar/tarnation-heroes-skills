@@ -5,14 +5,17 @@ import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
+import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Random;
 
@@ -20,7 +23,7 @@ public class SkillCounterAttack extends PassiveSkill {
 
     public SkillCounterAttack(Heroes plugin) {
         super(plugin, "CounterAttack");
-        setDescription("You have a 5% chance to return 50% of the attack's damage while blocking.");
+        setDescription("You have a $1% chance to return 50% of the attack's damage while blocking.");
         setIdentifiers("skill counterattack");
 
         // Register event
@@ -30,15 +33,20 @@ public class SkillCounterAttack extends PassiveSkill {
     @Override
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
+        node.set("block-chance", 5);
         node.set("particle-power", 0.5);
-        node.set("particle-amount", 10);
+        node.set("particle-amount", 100);
         return node;
     }
 
     @Override
     public String getDescription(Hero hero) {
         String description = getDescription();
-        return description;
+
+        // Block chance
+        int blockChance = SkillConfigManager.getUseSetting(hero, this, "block-chance", 5, false);
+
+        return description.replace("$1", "§9" + blockChance + "§6");
     }
 
     public class SkillCounterAttackListener implements Listener {
@@ -49,12 +57,11 @@ public class SkillCounterAttack extends PassiveSkill {
 
             Player player = (Player) event.getEntity();
             Hero hero = plugin.getCharacterManager().getHero(player);
-            //LivingEntity attacker = (LivingEntity) event.getDamager();
+            LivingEntity attacker = (LivingEntity) event.getDamager();
+            int blockChance = SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "block-chance", 5, false);
 
-            broadcast(player.getLocation(), "[CA] Checked.");
-
-            // Skill check
-            if (!hero.hasEffect("CounterAttack")) return;
+            // Skill check and damage check
+            if (!hero.hasEffect("CounterAttack") && !Skill.damageCheck(hero.getPlayer(), attacker)) return;
 
             // Check if hero is blocking and attacker is within 3 blocks
             if (!hero.getPlayer().isBlocking() || event.getEntity().getLocation().distance(player.getLocation()) > 3) return;
@@ -62,14 +69,14 @@ public class SkillCounterAttack extends PassiveSkill {
             // Get random number seeded by current system time
             Random rand = new Random(System.currentTimeMillis());
             int roll = rand.nextInt(100) + 1;
-            broadcast(player.getLocation(), "[CA] roll = " + roll);
 
             // 1-100
-            if (rand.nextInt(100) + 1 > 100 - 5) {
+            if (roll > 100 - blockChance) {
                 // Dodge, dip, duck, dive, and dodge
                 event.setCancelled(true);
+                Skill.damageEntity(attacker, hero.getEntity(), event.getDamage() * 0.5, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
                 broadcast(player.getLocation(), "You have countered "
-                        + (event.getEntity() instanceof Player ? ((Player)event.getEntity()).getName() : event.getEntity().getType())
+                        + (attacker instanceof Player ? ((Player) attacker).getName() : attacker.getType())
                         + "!");
 
                 // Play particle effect
@@ -83,23 +90,26 @@ public class SkillCounterAttack extends PassiveSkill {
 
             Player player = (Player) event.getEntity();
             Hero hero = plugin.getCharacterManager().getHero(player);
-            //LivingEntity attacker = (LivingEntity) event.getDamager();
+            LivingEntity attacker = (LivingEntity) event.getDamager();
+            int blockChance = SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "block-chance", 5, false);
 
-            // Skill check
-            if (!hero.hasEffect("CounterAttack")) return;
+            // Skill check and damage check
+            if (!hero.hasEffect("CounterAttack") && !Skill.damageCheck(hero.getPlayer(), attacker)) return;
 
             // Check if hero is blocking and attacker is within 3 blocks
             if (!hero.getPlayer().isBlocking() || event.getEntity().getLocation().distance(player.getLocation()) > 3) return;
 
             // Get random number seeded by current system time
             Random rand = new Random(System.currentTimeMillis());
+            int roll = rand.nextInt(100) + 1;
 
             // 1-100
-            if (rand.nextInt(100) + 1 > 100 - 5) {
+            if (roll > 100 - blockChance) {
                 // Dodge, dip, duck, dive, and dodge
                 event.setCancelled(true);
+                Skill.damageEntity(attacker, hero.getEntity(), event.getDamage() * 0.5, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
                 broadcast(player.getLocation(), "You have countered "
-                        + (event.getEntity() instanceof Player ? ((Player)event.getEntity()).getName() : event.getEntity().getType())
+                        + (attacker instanceof Player ? ((Player) attacker).getName() : attacker.getType())
                         + "!");
 
                 // Play particle effect
@@ -109,7 +119,7 @@ public class SkillCounterAttack extends PassiveSkill {
 
         public void playEffect(Hero hero) {
             float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "particle-power", 0.5, false);
-            int particleAmount = SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "particle-amount", 10, false);
+            int particleAmount = SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "particle-amount", 100, false);
             Location loc = hero.getPlayer().getLocation();
             loc.setY(loc.getY() + 0.5);
 
