@@ -2,19 +2,16 @@ package com.tarnation.Eliasar.heroes.skills;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
-import com.herocraftonline.heroes.characters.CharacterDamageManager;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Map;
 
@@ -95,37 +92,33 @@ public class SkillBackstab extends PassiveSkill {
             if (!hero.hasEffect("backstab")) return;
 
             Player player = hero.getPlayer();
-            //Hero playerHero = plugin.getCharacterManager().getHero(player);
             LivingEntity target = (LivingEntity) event.getEntity();
             Location targetLocation = target.getLocation();
 
             Map<String, Long> cooldowns = hero.getCooldowns();
 
             double angle = Math.toDegrees(player.getLocation().getDirection().angle(targetLocation.getDirection()));
-            broadcast(player.getLocation(), "[Backstab] angle = " + angle);
             if ((angle >= 0 && angle <= 90)
                     || (angle >= 270 && angle <= 360)) {
-                broadcast(player.getLocation(), "[Backstab] Proposed backstab range.");
-            }
+                if (!cooldowns.containsKey("backstab")
+                        || (hero.getCooldown("backstab") - System.currentTimeMillis()) <= 0) {
+                    if (target instanceof Player) {
+                        broadcast(player.getLocation(), player.getName() + " has backstabbed " + ((Player) target).getName() + "!");
+                    } else {
+                        broadcast(player.getLocation(), player.getName() + " has backstabbed " + target.getType() + "!");
+                    }
 
-            if (!cooldowns.containsKey("backstab")
-                    || (hero.getCooldown("backstab") - System.currentTimeMillis()) <= 0) {
-                if (target instanceof Player) {
-                    broadcast(player.getLocation(), player.getName() + " has backstabbed " + ((Player) target).getName() + "!");
-                } else {
-                    broadcast(player.getLocation(), player.getName() + " has backstabbed " + target.getType() + "!");
+                    // Set damage
+                    event.setDamage(event.getDamage() * 2);
+
+                    // Play effect at target
+                    playEffect(hero, target);
+
+                    hero.setCooldown(
+                            skill.getName(),
+                            System.currentTimeMillis() + SkillConfigManager.getUseSetting(hero, skill, SkillSetting.COOLDOWN, 5000, false)
+                    );
                 }
-
-                // Set damage
-                event.setDamage(event.getDamage() * 2);
-
-                // Play effect at target
-                playEffect(hero, target);
-
-                hero.setCooldown(
-                        skill.getName(),
-                        System.currentTimeMillis() + SkillConfigManager.getUseSetting(hero, skill, SkillSetting.COOLDOWN, 5000, false)
-                );
             }
         }
 
