@@ -4,6 +4,13 @@ Skills for the Heroes plugin in Minecraft for the [Tarnation Server](http://tarn
 
 ## Brawler Skills
 
+Name | Type and Cost | Description
+:--- | :-----------: | :----------
+Jab | Active, CD: 1.5s, MP: 10 | You jab your opponent for 120% fist damage.
+One-Two Punch | Passive, CD: ---, MP: --- | You swing a second time for the damage of your normal punch.
+Leap | Active, CD: 20s, MP: 15 | Leaps up to 15 blocks in the direction you are facing.
+Kidney Shot | Active, CD: 30s, MP: 20 | Stuns your target with a quick shot to the kidney.
+
 ## Rogue Skills
 
 Name | Type and Cost | Description
