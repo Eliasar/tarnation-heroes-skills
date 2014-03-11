@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,15 +52,20 @@ public class SkillCounterAttack extends PassiveSkill {
 
         @EventHandler
         public void onWeaponDamage(WeaponDamageEvent event) {
-            if (event.isCancelled()) return;
+            if (event.isCancelled()
+                    || !(event.getEntity() instanceof Player)) {
+                return;
+            }
 
             Player player = (Player) event.getEntity();
             Hero hero = plugin.getCharacterManager().getHero(player);
-            LivingEntity attacker = (LivingEntity) event.getDamager();
             int blockChance = SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "block-chance", 5, false);
 
             // Skill check and damage check
-            if (!hero.hasEffect("CounterAttack") && !Skill.damageCheck(hero.getPlayer(), attacker)) return;
+            if (!hero.hasEffect("CounterAttack")
+                    || !Skill.damageCheck(hero.getPlayer(), event.getDamager().getEntity())) {
+                return;
+            }
 
             // Check if hero is blocking and attacker is within 3 blocks
             if (!hero.getPlayer().isBlocking() || event.getEntity().getLocation().distance(player.getLocation()) > 3) return;
@@ -74,9 +78,9 @@ public class SkillCounterAttack extends PassiveSkill {
             if (roll > 100 - blockChance) {
                 // Dodge, dip, duck, dive, and dodge
                 event.setCancelled(true);
-                Skill.damageEntity(attacker, hero.getEntity(), event.getDamage() * 0.5, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
+                Skill.damageEntity(event.getDamager().getEntity(), hero.getEntity(), event.getDamage() * 0.5, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
                 broadcast(player.getLocation(), "You have countered "
-                        + (attacker instanceof Player ? ((Player) attacker).getName() : attacker.getType())
+                        + (event.getDamager().getEntity() instanceof Player ? ((Player) event.getDamager().getEntity()).getName() : event.getDamager().getEntity().getType())
                         + "!");
 
                 // Play particle effect
@@ -86,15 +90,20 @@ public class SkillCounterAttack extends PassiveSkill {
 
         @EventHandler
         public void onSkillDamage(SkillDamageEvent event) {
-            if (event.isCancelled()) return;
+            if (event.isCancelled()
+                    || !(event.getEntity() instanceof Player)) {
+                return;
+            }
 
             Player player = (Player) event.getEntity();
             Hero hero = plugin.getCharacterManager().getHero(player);
-            LivingEntity attacker = (LivingEntity) event.getDamager();
             int blockChance = SkillConfigManager.getUseSetting(hero, SkillCounterAttack.this, "block-chance", 5, false);
 
             // Skill check and damage check
-            if (!hero.hasEffect("CounterAttack") && !Skill.damageCheck(hero.getPlayer(), attacker)) return;
+            if (!hero.hasEffect("CounterAttack")
+                    || !Skill.damageCheck(hero.getPlayer(), event.getDamager().getEntity())) {
+                return;
+            }
 
             // Check if hero is blocking and attacker is within 3 blocks
             if (!hero.getPlayer().isBlocking() || event.getEntity().getLocation().distance(player.getLocation()) > 3) return;
@@ -107,9 +116,9 @@ public class SkillCounterAttack extends PassiveSkill {
             if (roll > 100 - blockChance) {
                 // Dodge, dip, duck, dive, and dodge
                 event.setCancelled(true);
-                Skill.damageEntity(attacker, hero.getEntity(), event.getDamage() * 0.5, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
+                Skill.damageEntity(event.getDamager().getEntity(), hero.getEntity(), event.getDamage() * 0.5, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
                 broadcast(player.getLocation(), "You have countered "
-                        + (attacker instanceof Player ? ((Player) attacker).getName() : attacker.getType())
+                        + (event.getDamager().getEntity() instanceof Player ? ((Player) event.getDamager().getEntity()).getName() : event.getDamager().getEntity().getType())
                         + "!");
 
                 // Play particle effect
