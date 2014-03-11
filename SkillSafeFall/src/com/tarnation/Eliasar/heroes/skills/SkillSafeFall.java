@@ -1,7 +1,7 @@
 package com.tarnation.Eliasar.heroes.skills;
 
 import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
+import com.herocraftonline.heroes.api.events.CharacterDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.PassiveSkill;
 import org.bukkit.Bukkit;
@@ -9,12 +9,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class SkillSafeFall extends PassiveSkill {
 
     public SkillSafeFall(Heroes plugin) {
         super(plugin, "SafeFall");
-        setDescription("Take one-third damage from falls.\n");
+        setDescription("Take one-third damage from falls.");
         setIdentifiers("skill safefall");
 
         // Register event
@@ -24,8 +25,6 @@ public class SkillSafeFall extends PassiveSkill {
     @Override
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
-        node.set("particle-power", 0.5);
-        node.set("particle-amount", 10);
         return node;
     }
 
@@ -41,8 +40,8 @@ public class SkillSafeFall extends PassiveSkill {
     public class SkillSafeFallListener implements Listener {
 
         @EventHandler
-        public void onWeaponDamage(WeaponDamageEvent event) {
-            if (event.isCancelled() || !(event.getEntity() instanceof Player)) {
+        public void onFallDamage(CharacterDamageEvent event) {
+            if (event.isCancelled() || !(event.getEntity() instanceof Player) || event.getCause() != EntityDamageEvent.DamageCause.FALL) {
                 return;
             }
 
