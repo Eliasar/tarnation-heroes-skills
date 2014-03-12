@@ -7,17 +7,16 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import org.bukkit.Effect;
+import com.herocraftonline.heroes.util.Messaging;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class SkillLeap extends ActiveSkill {
 
     public SkillLeap(Heroes plugin) {
         super(plugin, "Leap");
-        setDescription("Leaps $1 blocks in the direction you are facing, dealing $2 damage when you land within $3 blocks of enemies.");
+        setDescription("Leaps $1 blocks in the direction you are facing.");
         setUsage("/skill leap");
         setArgumentRange(0, 0);
         setIdentifiers("skill leap");
@@ -66,52 +65,36 @@ public class SkillLeap extends ActiveSkill {
             description += "§6CD: §9" + cooldown + "s" + ending;
         }
 
-        // Damage
-        double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 2, false)
-                + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.1, false) * hero.getLevel();
-
         // Distance
         int distance = SkillConfigManager.getUseSetting(hero, this, SkillSetting.AMOUNT.node(), 8, false);
 
-        // Radius
-        int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS.node(), 3, false);
-
         description += getDescription()
-                .replace("$1", "§9" + distance + "§6")
-                .replace("$2", "§9" + damage + "§6")
-                .replace("$3", "§9" + radius + "§6");
+                .replace("$1", "§9" + distance + "§6");
 
         return description;
     }
 
     @Override
     public SkillResult use(Hero hero, String[] strings) {
-        double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 2, false)
-                + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.1, false) * hero.getLevel();
-
-        int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS.node(), 3, false);
-
         int distance = SkillConfigManager.getUseSetting(hero, this, SkillSetting.AMOUNT.node(), 8, false);
+        double height = 0.75D;
 
         // Set velocity to distance
-        double normalX = hero.getPlayer().getLocation().getDirection().normalize().getX() * distance;
-        double normalZ = hero.getPlayer().getLocation().getDirection().normalize().getZ() * distance;
-
         Location targetLocation = hero.getPlayer().getLocation();
         targetLocation.setX(targetLocation.getX()
                 + hero.getPlayer().getLocation().getDirection().normalize().getX() * Math.sqrt(distance));
         targetLocation.setZ(targetLocation.getZ()
                 + hero.getPlayer().getLocation().getDirection().normalize().getZ() * Math.sqrt(distance));
 
-        broadcast(hero.getPlayer().getLocation(), "[Leap] normalX = " + normalX);
-        broadcast(hero.getPlayer().getLocation(), "[Leap] normalZ = " + normalZ);
-
         double d1 = hero.getPlayer().getLocation().getX() - targetLocation.getX();
         double d2 = hero.getPlayer().getLocation().getZ() - targetLocation.getZ();
 
-        hero.getPlayer().setVelocity(new Vector(-d1, 2.0D, -d2));
-
-        // Damage targets in area of radius
+        if (hero.getPlayer().getLocation().getBlockY() == hero.getPlayer().getLocation().getY()) {
+            hero.getPlayer().setVelocity(new Vector(-d1, height, -d2));
+        } else {
+            Messaging.send(hero.getPlayer(), "You can't use Leap while in the air.");
+            return SkillResult.INVALID_TARGET_NO_MSG;
+        }
 
         return SkillResult.NORMAL;
     }
@@ -159,12 +142,12 @@ public class SkillLeap extends ActiveSkill {
         return SkillResult.NORMAL;
     }*/
 
-    public void playEffect(Hero hero, LivingEntity target) {
+    /*public void playEffect(Hero hero, LivingEntity target) {
         float particlePower = (float) SkillConfigManager.getUseSetting(hero, this, "particle-power", 0.5, false);
         int particleAmount = SkillConfigManager.getUseSetting(hero, this, "particle-amount", 100, false);
         Location loc = hero.getPlayer().getLocation();
         loc.setY(loc.getY() + 0.5);
 
         hero.getPlayer().getWorld().spigot().playEffect(loc, Effect.CLOUD, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-    }
+    }*/
 }

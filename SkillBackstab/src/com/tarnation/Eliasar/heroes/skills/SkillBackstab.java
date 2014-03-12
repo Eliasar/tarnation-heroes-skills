@@ -98,8 +98,8 @@ public class SkillBackstab extends PassiveSkill {
             Map<String, Long> cooldowns = hero.getCooldowns();
 
             double angle = Math.toDegrees(player.getLocation().getDirection().angle(targetLocation.getDirection()));
-            if ((angle >= 0 && angle <= 90)
-                    || (angle >= 270 && angle <= 360)) {
+            if ((angle >= 0 && angle <= 80)
+                    || (angle >= 280 && angle <= 360)) {
                 if (!cooldowns.containsKey("backstab")
                         || (hero.getCooldown("backstab") - System.currentTimeMillis()) <= 0) {
                     if (target instanceof Player) {
