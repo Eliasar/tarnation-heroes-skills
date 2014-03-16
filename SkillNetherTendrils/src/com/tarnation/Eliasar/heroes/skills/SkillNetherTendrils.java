@@ -19,7 +19,7 @@ public class SkillNetherTendrils extends TargettedSkill {
 
     public SkillNetherTendrils(Heroes plugin) {
         super(plugin, "NetherTendrils");
-        setDescription("Summon nether tendrils that deal damage $1 over $2 seconds.");
+        setDescription("Summon nether tendrils that deal $1 damage over $2 seconds.");
         setUsage("/skill nethertendrils");
         setArgumentRange(0, 0);
         setIdentifiers("skill nethertendrils");
@@ -73,9 +73,6 @@ public class SkillNetherTendrils extends TargettedSkill {
         double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_TICK.node(), 3, false)
                 + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.15, false) * hero.getLevel();
 
-        // Period
-        //int period = SkillConfigManager.getUseSetting(hero, this, SkillSetting.PERIOD.node(), 2000, false) / 1000;
-
         // Duration
         int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 6000, false) / 1000;
 
@@ -106,7 +103,6 @@ public class SkillNetherTendrils extends TargettedSkill {
         if (Skill.damageCheck(hero.getPlayer(), target)) {
             broadcastExecuteText(hero, target);
             addSpellTarget(target, hero);
-            //Skill.damageEntity(target, hero.getEntity(), dmgTick, EntityDamageEvent.DamageCause.ENTITY_ATTACK, false);
             plugin.getCharacterManager().getCharacter(target).addEffect(ne);
         } else {
             return SkillResult.INVALID_TARGET;
@@ -116,8 +112,6 @@ public class SkillNetherTendrils extends TargettedSkill {
 
     public class NetherTendrilsEffect extends PeriodicDamageEffect {
 
-        //private String applyText;
-        //private String expireText;
         private float particlePower;
         private int particleAmount;
 
@@ -125,8 +119,6 @@ public class SkillNetherTendrils extends TargettedSkill {
             super(skill, "NetherTendrils", period, duration, tickDamage, caster, true);
             this.types.add(EffectType.MAGIC);
             this.types.add(EffectType.DISPELLABLE);
-            //this.applyText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.APPLY_TEXT, "");
-            //this.expireText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.EXPIRE_TEXT, "");
             this.particlePower = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster),
                     SkillNetherTendrils.this, "particle-power", 1, false);
             this.particleAmount = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster),
@@ -136,7 +128,6 @@ public class SkillNetherTendrils extends TargettedSkill {
         @Override
         public void applyToHero(Hero hero) {
             super.applyToHero(hero);
-            //Player p = hero.getPlayer();
         }
 
         @Override
@@ -147,7 +138,6 @@ public class SkillNetherTendrils extends TargettedSkill {
         @Override
         public void removeFromHero(Hero hero) {
             super.removeFromHero(hero);
-            //Player p = hero.getPlayer();
         }
 
         @Override
@@ -157,8 +147,6 @@ public class SkillNetherTendrils extends TargettedSkill {
 
         @Override
         public void tickMonster(Monster monster) {
-            //super.tickMonster(monster);
-            //addSpellTarget(monster.getEntity(), plugin.getCharacterManager().getHero(getApplier()));
             damageEntity(monster.getEntity(), getApplier(), getTickDamage(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, false);
 
             playEffect(monster.getEntity());
@@ -166,9 +154,6 @@ public class SkillNetherTendrils extends TargettedSkill {
 
         @Override
         public void tickHero(Hero hero) {
-            //super.tickHero(hero);
-            /*Player p = hero.getPlayer();
-            addSpellTarget(p, plugin.getCharacterManager().getHero(getApplier()));*/
             damageEntity(hero.getPlayer(), getApplier(), getTickDamage(), EntityDamageEvent.DamageCause.ENTITY_ATTACK, false);
 
             playEffect(hero.getEntity());
