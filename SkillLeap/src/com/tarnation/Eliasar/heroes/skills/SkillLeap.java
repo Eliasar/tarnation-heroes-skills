@@ -3,11 +3,11 @@ package com.tarnation.Eliasar.heroes.skills;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.common.SafeFallEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Messaging;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
@@ -26,9 +26,6 @@ public class SkillLeap extends ActiveSkill {
     @Override
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
-        node.set(SkillSetting.DAMAGE.node(), 2);
-        node.set(SkillSetting.DAMAGE_INCREASE.node(), 0.1);
-        node.set(SkillSetting.RADIUS.node(), 3);
         node.set(SkillSetting.AMOUNT.node(), 8);
         node.set(SkillSetting.MANA.node(), 10);
         node.set(SkillSetting.COOLDOWN.node(), 12000);
@@ -76,78 +73,30 @@ public class SkillLeap extends ActiveSkill {
 
     @Override
     public SkillResult use(Hero hero, String[] strings) {
+
         int distance = SkillConfigManager.getUseSetting(hero, this, SkillSetting.AMOUNT.node(), 8, false);
-        double height = 0.75D;
 
         // Set velocity to distance
+        double normalX = hero.getPlayer().getLocation().getDirection().normalize().getX() * distance;
+        double normalZ = hero.getPlayer().getLocation().getDirection().normalize().getZ() * distance;
+
         Location targetLocation = hero.getPlayer().getLocation();
         targetLocation.setX(targetLocation.getX()
                 + hero.getPlayer().getLocation().getDirection().normalize().getX() * Math.sqrt(distance));
         targetLocation.setZ(targetLocation.getZ()
                 + hero.getPlayer().getLocation().getDirection().normalize().getZ() * Math.sqrt(distance));
 
+        broadcast(hero.getPlayer().getLocation(), "[Leap] normalX = " + normalX);
+        broadcast(hero.getPlayer().getLocation(), "[Leap] normalZ = " + normalZ);
+
         double d1 = hero.getPlayer().getLocation().getX() - targetLocation.getX();
         double d2 = hero.getPlayer().getLocation().getZ() - targetLocation.getZ();
 
-        if (hero.getPlayer().getLocation().getBlockY() == hero.getPlayer().getLocation().getY()) {
-            hero.getPlayer().setVelocity(new Vector(-d1, height, -d2));
-        } else {
-            Messaging.send(hero.getPlayer(), "You can't use Leap while in the air.");
-            return SkillResult.INVALID_TARGET_NO_MSG;
-        }
+        hero.getPlayer().setVelocity(new Vector(-d1, 2.0D, -d2));
+
+        // Give safefall
+        hero.addEffect(new SafeFallEffect(this, 4000));
 
         return SkillResult.NORMAL;
     }
-
-    /*@Override
-    public SkillResult use(Hero hero, LivingEntity target, String[] args) {
-        double damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 1, false)
-                + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.1, false) * hero.getLevel();
-
-
-        // Do not damage players in creative
-        if (target instanceof Player) {
-            if (((Player) target).getGameMode() == GameMode.CREATIVE)
-                return SkillResult.INVALID_TARGET;
-        }
-
-        // Check if you can damage target
-        if (Skill.damageCheck(hero.getPlayer(), target)) {
-            broadcastExecuteText(hero, target);
-            addSpellTarget(target, hero);
-
-            Skill.damageEntity(target, hero.getEntity(), damage, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
-        } else {
-            return SkillResult.INVALID_TARGET;
-        }
-
-        // Move caster to target location
-        Location chargeLocation = target.getLocation();
-
-        double d1 = hero.getPlayer().getLocation().getX() - chargeLocation.getX();
-        double d2 = hero.getPlayer().getLocation().getZ() - chargeLocation.getZ();
-
-        hero.getPlayer().setVelocity(new Vector(-d1, 0.2D, -d2));
-
-        // Knock back target
-        hero.getPlayer().getLocation().getDirection().normalize();
-        d1 = hero.getPlayer().getLocation().getDirection().normalize().getX() * 2;
-        d2 = hero.getPlayer().getLocation().getDirection().normalize().getZ() * 2;
-
-        target.setVelocity(new Vector(d1, 0.2D, d2));
-
-        // Create particle effect at target
-        playEffect(hero, target);
-
-        return SkillResult.NORMAL;
-    }*/
-
-    /*public void playEffect(Hero hero, LivingEntity target) {
-        float particlePower = (float) SkillConfigManager.getUseSetting(hero, this, "particle-power", 0.5, false);
-        int particleAmount = SkillConfigManager.getUseSetting(hero, this, "particle-amount", 100, false);
-        Location loc = hero.getPlayer().getLocation();
-        loc.setY(loc.getY() + 0.5);
-
-        hero.getPlayer().getWorld().spigot().playEffect(loc, Effect.CLOUD, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);
-    }*/
 }

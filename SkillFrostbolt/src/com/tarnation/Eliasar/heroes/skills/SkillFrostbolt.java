@@ -3,6 +3,7 @@ package com.tarnation.Eliasar.heroes.skills;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.*;
 import org.bukkit.Bukkit;
@@ -105,7 +106,7 @@ public class SkillFrostbolt extends ActiveSkill {
         return SkillResult.NORMAL;
     }
 
-    /*public class FrostboltEffect extends SlowEffect {
+    public class FrostboltEffect extends SlowEffect {
 
         public FrostboltEffect(Skill skill, long duration, int amplifier, Hero applier) {
             super(skill, duration, amplifier, false, applyText, expireText, applier);
@@ -130,16 +131,14 @@ public class SkillFrostbolt extends ActiveSkill {
         public void removeFromMonster(Monster monster) {
             super.removeFromMonster(monster);
         }
-    }*/
+    }
 
     public class SkillFrostboltListener implements Listener {
 
         @EventHandler
         public void onEntityDamage(EntityDamageEvent event) {
 
-            if (event.isCancelled()
-                    || !(event instanceof EntityDamageByEntityEvent)
-                    || !(event.getEntity() instanceof LivingEntity)) return;
+            if (event.isCancelled() || !(event instanceof EntityDamageByEntityEvent) || !(event.getEntity() instanceof LivingEntity)) return;
 
             EntityDamageByEntityEvent subEvent = (EntityDamageByEntityEvent) event;
             Entity projectile = subEvent.getDamager();
@@ -169,11 +168,9 @@ public class SkillFrostbolt extends ActiveSkill {
                 // Add effect
                 long duration = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "slow-duration", 2500, false);
                 int amplifier = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "slow-multiplier", 2, false);
-                //FrostboltEffect fe = new FrostboltEffect(SkillFrostbolt.this, duration, amplifier, hero);
+                FrostboltEffect fe = new FrostboltEffect(SkillFrostbolt.this, duration, amplifier, hero);
 
-                plugin.getCharacterManager().getCharacter(target).addEffect(
-                        new SlowEffect(SkillFrostbolt.this, duration, amplifier, false, applyText, expireText, hero)
-                );
+                plugin.getCharacterManager().getCharacter(target).addEffect(fe);
 
                 float particlePower = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "particle-power", 1, false);
                 int particleAmount = SkillConfigManager.getUseSetting(hero, SkillFrostbolt.this, "particle-amount", 50, false);

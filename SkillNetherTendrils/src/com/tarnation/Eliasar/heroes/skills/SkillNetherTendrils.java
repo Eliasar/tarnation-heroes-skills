@@ -74,7 +74,7 @@ public class SkillNetherTendrils extends TargettedSkill {
                 + SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.15, false) * hero.getLevel();
 
         // Period
-        int period = SkillConfigManager.getUseSetting(hero, this, SkillSetting.PERIOD.node(), 2000, false) / 1000;
+        //int period = SkillConfigManager.getUseSetting(hero, this, SkillSetting.PERIOD.node(), 2000, false) / 1000;
 
         // Duration
         int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 6000, false) / 1000;
@@ -116,8 +116,8 @@ public class SkillNetherTendrils extends TargettedSkill {
 
     public class NetherTendrilsEffect extends PeriodicDamageEffect {
 
-        private String applyText;
-        private String expireText;
+        //private String applyText;
+        //private String expireText;
         private float particlePower;
         private int particleAmount;
 
@@ -125,8 +125,8 @@ public class SkillNetherTendrils extends TargettedSkill {
             super(skill, "NetherTendrils", period, duration, tickDamage, caster, true);
             this.types.add(EffectType.MAGIC);
             this.types.add(EffectType.DISPELLABLE);
-            this.applyText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.APPLY_TEXT, "");
-            this.expireText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.EXPIRE_TEXT, "");
+            //this.applyText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.APPLY_TEXT, "");
+            //this.expireText = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster), SkillNetherTendrils.this, SkillSetting.EXPIRE_TEXT, "");
             this.particlePower = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster),
                     SkillNetherTendrils.this, "particle-power", 1, false);
             this.particleAmount = SkillConfigManager.getUseSetting(plugin.getCharacterManager().getHero(caster),
@@ -136,7 +136,7 @@ public class SkillNetherTendrils extends TargettedSkill {
         @Override
         public void applyToHero(Hero hero) {
             super.applyToHero(hero);
-            Player p = hero.getPlayer();
+            //Player p = hero.getPlayer();
         }
 
         @Override
@@ -147,7 +147,7 @@ public class SkillNetherTendrils extends TargettedSkill {
         @Override
         public void removeFromHero(Hero hero) {
             super.removeFromHero(hero);
-            Player p = hero.getPlayer();
+            //Player p = hero.getPlayer();
         }
 
         @Override

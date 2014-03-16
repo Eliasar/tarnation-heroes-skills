@@ -121,7 +121,7 @@ public class SkillShoulderCharge extends TargettedSkill {
     public void playEffect(Hero hero, LivingEntity target) {
         float particlePower = (float) SkillConfigManager.getUseSetting(hero, this, "particle-power", 0.5, false);
         int particleAmount = SkillConfigManager.getUseSetting(hero, this, "particle-amount", 100, false);
-        Location loc = hero.getPlayer().getLocation();
+        Location loc = target.getLocation();
         loc.setY(loc.getY() + 0.5);
 
         hero.getPlayer().getWorld().spigot().playEffect(loc, Effect.CLOUD, 0, 0, 0, 0, 0, particlePower, particleAmount, 64);

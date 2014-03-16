@@ -8,9 +8,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="spigot-api-1.7.2-R0.4-SNAPSHOT" level="application" />
-    <orderEntry type="library" name="bukkit-1.7.2-R0.2" level="application" />
-    <orderEntry type="library" name="spigot-1.7.2-R0.2-SNAPSHOT" level="application" />
     <orderEntry type="library" name="Heroes" level="application" />
+    <orderEntry type="library" name="ant-contrib-1.0b3" level="project" />
+    <orderEntry type="library" name="maven-ant-tasks-2.1.3" level="project" />
   </component>
 </module>
 
