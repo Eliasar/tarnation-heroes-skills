@@ -36,7 +36,7 @@ public class SkillSlash extends ActiveSkill {
         node.set(SkillSetting.MANA.node(), 10);
         node.set(SkillSetting.APPLY_TEXT.node(), "$1 has gained Slash.");
         node.set(SkillSetting.EXPIRE_TEXT.node(), "$1 has lost Slash.");
-        node.set("particle-power", 0.5);
+        node.set("particle-power", 1);
         node.set("particle-amount", 50);
         return node;
     }
@@ -128,7 +128,7 @@ public class SkillSlash extends ActiveSkill {
                 event.setDamage(event.getDamage() * 1.4);
 
                 // Play effect
-                float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillSlash.this, "particle-power", 10, false);
+                float particlePower = (float) SkillConfigManager.getUseSetting(hero, SkillSlash.this, "particle-power", 1, false);
                 int particleAmount = SkillConfigManager.getUseSetting(hero, SkillSlash.this, "particle-amount", 50, false);
                 Location loc = event.getEntity().getLocation();
                 loc.setY(loc.getY() + 0.5);
