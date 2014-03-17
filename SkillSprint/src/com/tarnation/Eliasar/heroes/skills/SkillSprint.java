@@ -11,7 +11,6 @@ import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 public class SkillSprint extends ActiveSkill {
 
@@ -80,10 +79,7 @@ public class SkillSprint extends ActiveSkill {
         @Override
         public void applyToHero(Hero hero) {
             super.applyToHero(hero);
-            Player p = hero.getPlayer();
             final Hero finalHero = hero;
-            broadcast(p.getLocation(), SkillConfigManager.getUseSetting(hero,
-                    SkillSprint.this, SkillSetting.APPLY_TEXT, "").replace("$1", p.getDisplayName()));
             particleEffectTaskID = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(
                     plugin,
                     new Runnable() {
@@ -93,16 +89,13 @@ public class SkillSprint extends ActiveSkill {
                         }
                     },
                     0L,
-                    5L
+                    2L
             );
         }
 
         @Override
         public void removeFromHero(Hero hero) {
             super.removeFromHero(hero);
-            Player p = hero.getPlayer();
-            broadcast(p.getLocation(), SkillConfigManager.getUseSetting(hero,
-                    SkillSprint.this, SkillSetting.EXPIRE_TEXT, "").replace("$1", p.getDisplayName()));
             plugin.getServer().getScheduler().cancelTask(particleEffectTaskID);
         }
 
