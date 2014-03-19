@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Enchant">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="Enchant.jar">
+      <element id="module-output" name="SkillEnchant" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillEnchant" />
+    </root>
+  </artifact>
+</component>

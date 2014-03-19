@@ -110,6 +110,8 @@ public class SkillAgility extends PassiveSkill {
         public void onClassChange(ClassChangeEvent event) {
             broadcast(event.getHero().getPlayer().getLocation(), "[Agility] ClassChangeEvent fired.");
             final Player player = event.getHero().getPlayer();
+            plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
+            player.removePotionEffect(PotionEffectType.JUMP);
             if (event.getHero().hasEffect("Agility")) {
                 plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
                 player.removePotionEffect(PotionEffectType.JUMP);
@@ -131,6 +133,8 @@ public class SkillAgility extends PassiveSkill {
         public void onLevelUp(PlayerLevelChangeEvent event) {
             broadcast(event.getPlayer().getLocation(), "[Agility] PlayerLevelChangeEvent fired.");
             final Player player = event.getPlayer();
+            plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
+            player.removePotionEffect(PotionEffectType.JUMP);
             if (plugin.getCharacterManager().getHero(event.getPlayer()).hasEffect("Agility")) {
                 plugin.getServer().getScheduler().cancelTask(repeatingTaskID);
                 player.removePotionEffect(PotionEffectType.JUMP);

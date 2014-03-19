@@ -13,7 +13,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Random;
 
@@ -73,7 +72,8 @@ public class SkillOneTwoPunch extends PassiveSkill {
             if (roll > 100 - procChance) {
 
                 // One-two punch!
-                Skill.damageEntity(target, hero.getEntity(), event.getDamage() * 2.0, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
+                //Skill.damageEntity(target, hero.getEntity(), event.getDamage() * 2.0, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
+                event.setDamage(event.getDamage() * 2);
                 broadcast(player.getLocation(), "You one-two punch "
                         + (target instanceof Player ? ((Player) target).getName() : target.getType())
                         + "!");

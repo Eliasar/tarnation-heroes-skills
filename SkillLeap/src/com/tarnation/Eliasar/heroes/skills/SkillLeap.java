@@ -77,8 +77,8 @@ public class SkillLeap extends ActiveSkill {
         int distance = SkillConfigManager.getUseSetting(hero, this, SkillSetting.AMOUNT.node(), 8, false);
 
         // Set velocity to distance
-        double normalX = hero.getPlayer().getLocation().getDirection().normalize().getX() * distance;
-        double normalZ = hero.getPlayer().getLocation().getDirection().normalize().getZ() * distance;
+        //double normalX = hero.getPlayer().getLocation().getDirection().normalize().getX() * distance;
+        //double normalZ = hero.getPlayer().getLocation().getDirection().normalize().getZ() * distance;
 
         Location targetLocation = hero.getPlayer().getLocation();
         targetLocation.setX(targetLocation.getX()
@@ -86,8 +86,8 @@ public class SkillLeap extends ActiveSkill {
         targetLocation.setZ(targetLocation.getZ()
                 + hero.getPlayer().getLocation().getDirection().normalize().getZ() * Math.sqrt(distance));
 
-        broadcast(hero.getPlayer().getLocation(), "[Leap] normalX = " + normalX);
-        broadcast(hero.getPlayer().getLocation(), "[Leap] normalZ = " + normalZ);
+        /*broadcast(hero.getPlayer().getLocation(), "[Leap] normalX = " + normalX);
+        broadcast(hero.getPlayer().getLocation(), "[Leap] normalZ = " + normalZ);*/
 
         double d1 = hero.getPlayer().getLocation().getX() - targetLocation.getX();
         double d2 = hero.getPlayer().getLocation().getZ() - targetLocation.getZ();
