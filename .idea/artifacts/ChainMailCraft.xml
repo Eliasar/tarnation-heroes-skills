@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ChainMailCraft">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="ChainMailCraft.jar">
+      <element id="module-output" name="SkillChainMailCraft" />
+      <element id="dir-copy" path="$PROJECT_DIR$/SkillChainMailCraft" />
+    </root>
+  </artifact>
+</component>

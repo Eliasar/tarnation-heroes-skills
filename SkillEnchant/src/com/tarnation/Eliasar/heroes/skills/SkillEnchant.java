@@ -170,8 +170,9 @@ public class SkillEnchant extends ActiveSkill {
         }
 
         // Check if enchantment is valid for item in hand
-        if (!enchantment.canEnchantItem(itemInPlayerHand)) {
-            broadcast(hero.getPlayer().getLocation(), "You cannot enchant this item with " + enchantment.getName());
+        if (!itemInPlayerHand.equals(new ItemStack(Material.BOOK))
+                || !enchantment.canEnchantItem(itemInPlayerHand)) {
+            broadcast(hero.getPlayer().getLocation(), "You cannot enchant this item with " + friendlyEnchantName);
             return SkillResult.FAIL;
         }
 
