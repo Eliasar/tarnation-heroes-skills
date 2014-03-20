@@ -92,7 +92,7 @@ public class SkillLeap extends ActiveSkill {
         double d1 = hero.getPlayer().getLocation().getX() - targetLocation.getX();
         double d2 = hero.getPlayer().getLocation().getZ() - targetLocation.getZ();
 
-        hero.getPlayer().setVelocity(new Vector(-d1, 2.0D, -d2));
+        hero.getPlayer().setVelocity(new Vector(-d1, 0.8D, -d2));
 
         // Give safefall
         hero.addEffect(new SafeFallEffect(this, 4000));
