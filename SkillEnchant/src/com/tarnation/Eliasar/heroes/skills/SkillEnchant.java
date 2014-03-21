@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 public class SkillEnchant extends ActiveSkill {
 
@@ -37,19 +38,8 @@ public class SkillEnchant extends ActiveSkill {
     @Override
     public String getDescription(Hero hero) {
         String description = "";
-        //String ending = "§6; ";
 
-        // Cooldown
-        /*int cooldown = (SkillConfigManager.getUseSetting(hero, this, SkillSetting.COOLDOWN.node(), 0, false)
-                - SkillConfigManager.getUseSetting(hero, this, SkillSetting.COOLDOWN_REDUCE.node(), 0, false) * hero.getLevel()) / 1000;
-        if (cooldown > 0) {
-            description += "§6CD: §9" + cooldown + "s" + ending;
-        }*/
-
-        // Duration
-        //int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false);
-
-        description += getDescription();//.replace("$1", "§9" + duration/1000 + "§6");
+        description += getDescription();
 
         return description;
     }
@@ -170,8 +160,7 @@ public class SkillEnchant extends ActiveSkill {
         }
 
         // Check if enchantment is valid for item in hand
-        if (!itemInPlayerHand.equals(new ItemStack(Material.BOOK))
-                || !enchantment.canEnchantItem(itemInPlayerHand)) {
+        if (!enchantment.canEnchantItem(itemInPlayerHand) && !itemInPlayerHand.equals(new ItemStack(Material.BOOK))) {
             broadcast(hero.getPlayer().getLocation(), "You cannot enchant this item with " + friendlyEnchantName);
             return SkillResult.FAIL;
         }
@@ -211,13 +200,13 @@ public class SkillEnchant extends ActiveSkill {
         // Get reagent cost for amplitude
         switch (reagentAmplitude) {
             case 1:
-                baseReagent = new ItemStack(Material.COAL_BLOCK);
+                baseReagent = new ItemStack(Material.COAL);
                 break;
             case 2:
-                baseReagent = new ItemStack(Material.IRON_BLOCK);
+                baseReagent = new ItemStack(Material.IRON_INGOT);
                 break;
             case 3:
-                baseReagent = new ItemStack(Material.GOLD_BLOCK);
+                baseReagent = new ItemStack(Material.GOLD_INGOT);
                 break;
             case 4:
                 baseReagent = new ItemStack(Material.EMERALD);
@@ -226,7 +215,7 @@ public class SkillEnchant extends ActiveSkill {
                 baseReagent = new ItemStack(Material.DIAMOND);
                 break;
             default:
-                baseReagent = new ItemStack(Material.COAL_BLOCK);
+                baseReagent = new ItemStack(Material.COAL);
                 break;
         }
 
@@ -251,8 +240,21 @@ public class SkillEnchant extends ActiveSkill {
         hero.getPlayer().getInventory().removeItem(extraReagent);
 
         // Apply enchant
-        itemInPlayerHand.addEnchantment(enchantment, amplitude);
-        broadcast(hero.getPlayer().getLocation(), hero.getName() + " has enchanted the item with " + friendlyEnchantName + " " + amplitude + "!");
+        if (itemInPlayerHand.equals(new ItemStack(Material.BOOK))) {
+            // Remove 1 book
+            hero.getPlayer().getInventory().removeItem(new ItemStack(Material.BOOK));
+
+            // Replace with enchant book of enchant
+            ItemStack enchantedBook = new ItemStack(Material.ENCHANTED_BOOK);
+            EnchantmentStorageMeta esm = (EnchantmentStorageMeta)enchantedBook.getItemMeta();
+            esm.addStoredEnchant(enchantment, amplitude, true);
+            enchantedBook.setItemMeta(esm);
+            hero.getPlayer().getInventory().setItemInHand(enchantedBook);
+
+        } else {
+            itemInPlayerHand.addEnchantment(enchantment, amplitude);
+            broadcast(hero.getPlayer().getLocation(), hero.getName() + " has enchanted the item with " + friendlyEnchantName + " " + amplitude + "!");
+        }
 
         // Give exp
         double experienceGranted = ((1 + reagentAmplitude) * 5) * Math.sqrt(hero.getLevel(hero.getSecondClass()));

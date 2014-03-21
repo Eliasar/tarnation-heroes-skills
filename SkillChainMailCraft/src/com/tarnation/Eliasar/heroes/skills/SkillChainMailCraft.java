@@ -8,13 +8,17 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
@@ -66,16 +70,12 @@ public class SkillChainMailCraft extends PassiveSkill {
 
         @EventHandler(priority=EventPriority.LOWEST)
         public void onPlayerCraft(CraftItemEvent event) {
-            if (event.isCancelled()) {
-                return;
-            }
+            if (event.isCancelled()) return;
 
             if (event.getInventory() != null
                     && event.getSlotType().equals(InventoryType.SlotType.RESULT)) {
 
-                if (event.getCurrentItem() == null) {
-                    return;
-                }
+                if (event.getCurrentItem() == null) return;
 
                 Hero hero = plugin.getCharacterManager().getHero((Player)event.getWhoClicked());
                 double experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "helmet-exp", 50, false);
@@ -97,6 +97,32 @@ public class SkillChainMailCraft extends PassiveSkill {
                 }
 
                 hero.addExp(experienceGranted, hero.getSecondClass(), hero.getPlayer().getLocation());
+            }
+        }
+
+        @EventHandler(priority=EventPriority.LOWEST)
+        public void onPlayerInteract(PlayerInteractEvent event) {
+
+            if (event.isCancelled()) return;
+
+            //if (!(event.getWhoClicked() instanceof Player)) return;
+
+            /*if (event.getInventory().getType() == InventoryType.ANVIL) {
+                Hero hero = plugin.getCharacterManager().getHero((Player)event.getWhoClicked());
+
+                if (!(hero.hasEffect("Enchant"))
+                        && !(hero.hasEffect("ChainmailCraft"))) {
+                    event.setCancelled(true);
+                }
+            }*/
+
+            Block block = event.getClickedBlock();
+            Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
+
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK
+                    && block.getType().equals(Material.ANVIL)) {
+                broadcast(hero.getPlayer().getLocation(), "You can't use the anvil.");
+                event.setCancelled(true);
             }
         }
     }
