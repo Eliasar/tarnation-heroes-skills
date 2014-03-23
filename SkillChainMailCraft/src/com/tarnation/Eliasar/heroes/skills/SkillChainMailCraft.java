@@ -16,7 +16,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -78,25 +77,24 @@ public class SkillChainMailCraft extends PassiveSkill {
                 if (event.getCurrentItem() == null) return;
 
                 Hero hero = plugin.getCharacterManager().getHero((Player)event.getWhoClicked());
-                double experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "helmet-exp", 50, false);
+                double experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "helmet-exp", 7.5, false);
 
-                if (!hero.hasEffect("ChainMailCraft")) {
+                if (hero.hasEffect("ChainMailCraft")) {
+                    if (event.getCurrentItem().getType() == Material.CHAINMAIL_BOOTS) {
+                        experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "boot-exp", 9, false);
+                    } else if (event.getCurrentItem().getType() == Material.CHAINMAIL_CHESTPLATE) {
+                        experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "chest-exp", 15, false);
+                    } else if (event.getCurrentItem().getType() == Material.CHAINMAIL_HELMET) {
+                        experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "helmet-exp", 7.5, false);
+                    } else if (event.getCurrentItem().getType() == Material.CHAINMAIL_LEGGINGS) {
+                        experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "leg-exp", 12, false);
+                    }
+
+                    hero.addExp(experienceGranted, hero.getSecondClass(), hero.getPlayer().getLocation());
+                } else {
                     event.setCancelled(true);
                     hero.getPlayer().sendMessage(ChatColor.GRAY + "You lack the blacksmithing expertise required to craft chainmail!");
-                    return;
                 }
-
-                if (event.getCurrentItem().getType() == Material.CHAINMAIL_BOOTS) {
-                    experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "boot-exp", 60, false);
-                } else if (event.getCurrentItem().getType() == Material.CHAINMAIL_CHESTPLATE) {
-                    experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "chest-exp", 100, false);
-                } else if (event.getCurrentItem().getType() == Material.CHAINMAIL_HELMET) {
-                    experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "helmet-exp", 50, false);
-                } else if (event.getCurrentItem().getType() == Material.CHAINMAIL_LEGGINGS) {
-                    experienceGranted = SkillConfigManager.getUseSetting(hero, SkillChainMailCraft.this, "leg-exp", 80, false);
-                }
-
-                hero.addExp(experienceGranted, hero.getSecondClass(), hero.getPlayer().getLocation());
             }
         }
 
@@ -105,24 +103,26 @@ public class SkillChainMailCraft extends PassiveSkill {
 
             if (event.isCancelled()) return;
 
-            //if (!(event.getWhoClicked() instanceof Player)) return;
-
-            /*if (event.getInventory().getType() == InventoryType.ANVIL) {
-                Hero hero = plugin.getCharacterManager().getHero((Player)event.getWhoClicked());
-
-                if (!(hero.hasEffect("Enchant"))
-                        && !(hero.hasEffect("ChainmailCraft"))) {
-                    event.setCancelled(true);
-                }
-            }*/
-
             Block block = event.getClickedBlock();
             Hero hero = plugin.getCharacterManager().getHero(event.getPlayer());
 
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK
                     && block.getType().equals(Material.ANVIL)) {
-                broadcast(hero.getPlayer().getLocation(), "You can't use the anvil.");
-                event.setCancelled(true);
+
+                if (hero.hasEffect("ChainmailCraft")) {
+                    // Normal repair functionality per Enchanter and Blacksmith
+                    event.setCancelled(true);
+
+                    // Check for reagents (wood, stone, iron, gold, diamond)
+
+                    // Check for enchants on item (use enchanter chart to calculate actuals) - BS level > total enchants
+
+                    // Repair durability by %
+
+                } else {
+                    hero.getPlayer().sendMessage(ChatColor.GRAY + "You don't have the necessary training to use an Anvil.");
+                    event.setCancelled(true);
+                }
             }
         }
     }

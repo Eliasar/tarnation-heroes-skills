@@ -68,13 +68,14 @@ public class SkillOneTwoPunch extends PassiveSkill {
             Random rand = new Random(System.currentTimeMillis());
             int roll = rand.nextInt(100) + 1;
 
+            player.sendMessage("[OTP] Roll: " + roll);
+
             // 1-100
             if (roll > 100 - procChance) {
 
                 // One-two punch!
-                //Skill.damageEntity(target, hero.getEntity(), event.getDamage() * 2.0, EntityDamageEvent.DamageCause.ENTITY_ATTACK, true);
                 event.setDamage(event.getDamage() * 2);
-                broadcast(player.getLocation(), "You one-two punch "
+                player.sendMessage("You one-two punch "
                         + (target instanceof Player ? ((Player) target).getName() : target.getType())
                         + "!");
             }
