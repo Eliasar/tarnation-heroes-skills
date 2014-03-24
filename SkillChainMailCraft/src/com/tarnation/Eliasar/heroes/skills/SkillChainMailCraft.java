@@ -58,10 +58,10 @@ public class SkillChainMailCraft extends PassiveSkill {
     @Override
     public ConfigurationSection getDefaultConfig() {
         ConfigurationSection node = super.getDefaultConfig();
-        node.set("boot-exp", 60);
-        node.set("chest-exp", 100);
-        node.set("helmet-exp", 50);
-        node.set("leg-exp", 80);
+        node.set("boot-exp", 9);
+        node.set("chest-exp", 15);
+        node.set("helmet-exp", 7.5);
+        node.set("leg-exp", 12);
         return super.getDefaultConfig();
     }
 
@@ -110,7 +110,7 @@ public class SkillChainMailCraft extends PassiveSkill {
                     && block.getType().equals(Material.ANVIL)) {
 
                 if (hero.hasEffect("ChainmailCraft")) {
-                    // Normal repair functionality per Enchanter and Blacksmith
+                    // Normal repair functionality per Blacksmith
                     event.setCancelled(true);
 
                     // Check for reagents (wood, stone, iron, gold, diamond)

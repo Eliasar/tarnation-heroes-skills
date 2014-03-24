@@ -329,7 +329,6 @@ public class SkillEnchant extends ActiveSkill {
 
             // Event is a right click on an enchanted book
             if (event.isRightClick()) {
-                //hero.getPlayer().sendMessage(ChatColor.GRAY + "You right clicked an object.");
                 if (event.getCurrentItem().getType().equals(Material.ENCHANTED_BOOK)) {
                     rightClickItem = event.getCurrentItem();
                     EnchantmentStorageMeta esm = (EnchantmentStorageMeta)rightClickItem.getItemMeta();
@@ -341,12 +340,10 @@ public class SkillEnchant extends ActiveSkill {
                     hero.getPlayer().sendMessage(ChatColor.WHITE + "Trying to enchant with: " + message.substring(0, message.length() - 2));
                 }
             } else if (event.isLeftClick()) {
-                //hero.getPlayer().sendMessage(ChatColor.GRAY + "You left clicked an object.");
                 if (rightClickItem != null && !event.getCurrentItem().getType().equals(Material.AIR)) {
                     ItemStack leftClickItem = event.getCurrentItem();
                     EnchantmentStorageMeta rightClickItemESM = (EnchantmentStorageMeta)rightClickItem.getItemMeta();
                     for (Map.Entry<Enchantment, Integer> e : rightClickItemESM.getStoredEnchants().entrySet()) {
-                        //hero.getPlayer().sendMessage(ChatColor.GRAY + "" + e.getKey() + ":" + e.getValue());
                         if (e.getKey().canEnchantItem(leftClickItem)) {
                             FriendlyEnchantmentName friendlyEnchantmentName = FriendlyEnchantmentName.valueOf(e.getKey().getName());
                             leftClickItem.addEnchantment(e.getKey(), e.getValue());
@@ -362,18 +359,15 @@ public class SkillEnchant extends ActiveSkill {
                     // Destroy book, reset right click item, cancel left click event
                     final Hero finalHero = hero;
                     final ItemStack finalRightClickItem = rightClickItem;
-                    plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            finalHero.getPlayer().getInventory().removeItem(finalRightClickItem);
-                        }
-                    });
-                    //hero.getPlayer().getInventory().removeItem(event.getCursor());
+                    plugin.getServer().getScheduler().runTask(plugin,
+                            new Runnable() {
+                                @Override
+                                 public void run() { finalHero.getPlayer().getInventory().removeItem(finalRightClickItem); }
+                    }
+                    );
                     hero.getPlayer().sendMessage("LeftClickItem = " + leftClickItem.getType());
                     hero.getPlayer().sendMessage("rightClickItem = " + rightClickItem.getType());
-                    //hero.getPlayer().getInventory().removeItem(rightClickItem);
                     rightClickItem = null;
-                    //event.setCancelled(true);
                 } else {
                     // Left clicked on air
                     rightClickItem = null;

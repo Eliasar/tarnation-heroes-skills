@@ -68,8 +68,6 @@ public class SkillOneTwoPunch extends PassiveSkill {
             Random rand = new Random(System.currentTimeMillis());
             int roll = rand.nextInt(100) + 1;
 
-            player.sendMessage("[OTP] Roll: " + roll);
-
             // 1-100
             if (roll > 100 - procChance) {
 
